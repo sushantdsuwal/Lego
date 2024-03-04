@@ -9,5 +9,19 @@
  */
 
 {
+    "form": {
+        "name": "form",
+        "scope": "",
+        "version": "",
+        "defaultScope": "org.scope",
+        "mainFile": "index.ts",
+        "rootDir": "scope/form",
+        "config": {
+            "bitdev.react/react-env@1.1.49": {},
+            "teambit.envs/envs": {
+                "env": "bitdev.react/react-env"
+            }
+        }
+    },
     "$schema-version": "17.0.0"
 }

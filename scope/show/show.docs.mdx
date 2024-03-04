@@ -1,0 +1,25 @@
+---
+description: A Show component.
+---
+
+import { Show } from './show';
+
+## Basic usage
+
+Use the show component:
+
+```js
+<Show.When isTrue={amount === 6 && !hasLink}>
+  <b>Lucky number 6!</b>
+  <a href="https://google.com">Click Here</a>
+</Show.When>
+
+<Show.When isTrue={amount === 6 && hasLink}>
+  <b>Lucky number 6!</b>
+  <a href="https://google.com">Click Here</a>
+</Show.When>
+
+<Show.Else>
+  <b>Conditions are not met!</b>
+</Show.Else>
+```

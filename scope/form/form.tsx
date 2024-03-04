@@ -1,39 +1,48 @@
+import React from 'react';
 import { useState, useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import {
-  Form as BootstrapFrom,
+  Form as BootstrapForm,
   Button,
   Row,
   Col,
   InputGroup,
   FormControl,
 } from 'react-bootstrap';
-
-interface ValidationRule {
-  (value: string): string;
-}
+import { object, StringSchema } from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 interface Field {
   name: string;
   label: string;
   type: string;
-  // validation?: ValidationRule[];
-  [key: string]: any;
+  validation?: StringSchema<string>;
 }
-
 interface FormProps {
   schema: Field[];
-  onSubmit: SubmitHandler<any>;
+  onSubmit: SubmitHandler<Record<string, any>>;
   initialValues?: Record<string, any>;
 }
 
 export function Form({ schema, onSubmit, initialValues }: FormProps) {
+  const yupValidationSchema = schema?.reduce((acc, field) => {
+    if (field.validation) {
+      acc[field.name] = field.validation;
+    }
+    return acc;
+  }, {} as Record<string, StringSchema<string>>);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({ defaultValues: initialValues });
-  const [formData, setFormData] = useState<Record<string, any>>(
+    setValue,
+  } = useForm({
+    defaultValues: initialValues,
+    resolver: yupResolver(object(yupValidationSchema)),
+  });
+
+  const [formData, setFormData] = useState<Record<string, string>>(
     initialValues || {}
   );
 
@@ -42,46 +51,41 @@ export function Form({ schema, onSubmit, initialValues }: FormProps) {
   }, [initialValues]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(event.target.name, event.target.value);
     setFormData({
       ...formData,
       [event.target.name]: event.target.value,
     });
   };
 
-  const handleFormSubmit = (data: Record<string, any>) => {
+  const handleFormSubmit = (data: Record<string, string>) => {
     onSubmit(data);
   };
 
   return (
-    <BootstrapFrom onSubmit={handleSubmit(handleFormSubmit)}>
-      {schema.map((field: Field) => {
-        const { name, label, type, validation = [], ...rest } = field;
-
-        const errorMessages = validation
-          .map((rule) => rule(formData[name]))
-          .filter((message) => message);
+    <BootstrapForm onSubmit={handleSubmit(handleFormSubmit)}>
+      {schema?.map((field: Field) => {
+        const { name, label, type, validation = {}, ...rest } = field;
 
         return (
           <Row key={name} className="mb-3">
             <Col sm={2}>
-              <BootstrapFrom.Label>{label}</BootstrapFrom.Label>
+              <BootstrapForm.Label>{label}</BootstrapForm.Label>
             </Col>
             <Col sm={10}>
               {type === 'text' || type === 'email' || type === 'password' ? (
                 <InputGroup>
                   <FormControl
-                    {...register(name, {
-                      // ...(validation as unknown as ValidationRule),
-                    })}
+                    {...register(name)}
                     type={type}
                     value={formData[name] || ''}
                     onChange={handleChange}
                     {...rest}
                   />
-                  {errorMessages.length > 0 && (
-                    <BootstrapFrom.Text className="text-danger">
-                      {errorMessages[0]}{' '}
-                    </BootstrapFrom.Text>
+                  {errors[name] && (
+                    <BootstrapForm.Text className="text-danger">
+                      <>{errors[name]?.message}</>
+                    </BootstrapForm.Text>
                   )}
                 </InputGroup>
               ) : null}
@@ -92,6 +96,6 @@ export function Form({ schema, onSubmit, initialValues }: FormProps) {
       <Button type="submit" variant="primary">
         Submit
       </Button>
-    </BootstrapFrom>
+    </BootstrapForm>
   );
 }

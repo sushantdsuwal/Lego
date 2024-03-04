@@ -3,6 +3,8 @@ description: A Show component.
 ---
 
 import { Show } from './show';
+export const amount = 6;
+export const hasLink = true;
 
 ## Basic usage
 
@@ -11,7 +13,25 @@ Use the show component:
 ```js
 <Show.When isTrue={amount === 6 && !hasLink}>
   <b>Lucky number 6!</b>
+  <b>no link here</b>
+</Show.When>
+
+<Show.When isTrue={amount === 6 && hasLink}>
+  <b>Lucky number 6!</b>
   <a href="https://google.com">Click Here</a>
+</Show.When>
+
+<Show.Else>
+  <b>Conditions are not met!</b>
+</Show.Else>
+```
+
+### Display the `Show` component
+
+```js live
+<Show.When isTrue={amount === 6 && !hasLink}>
+  <b>Lucky number 6!</b>
+  <b>no link here</b>
 </Show.When>
 
 <Show.When isTrue={amount === 6 && hasLink}>

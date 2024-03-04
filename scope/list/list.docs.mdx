@@ -1,0 +1,33 @@
+---
+description: A List component.
+---
+
+import { List } from './list';
+
+## Basic usage
+
+Use the list component:
+
+```js
+ <List
+    of={books}
+    render={(item: Book, index: number) => {
+      return <li key={item.id}>{`${index} : ${item.title}`}</li>;
+    }}
+/>
+```
+
+### Display the text
+
+```js live
+<List
+  of={[
+    { id: 1, title: 'the catcher in the rye', author: 'J.D' },
+    { id: 2, title: 'To kill a mockingbird', author: 'Harper' },
+    { id: 4, title: '1984', author: 'George Orwell' },
+  ]}
+  render={(item, index) => {
+    return <p>{item.title}</p>
+  }}
+/>
+```

@@ -23,6 +23,20 @@
             }
         }
     },
+    "list": {
+        "name": "list",
+        "scope": "",
+        "version": "",
+        "defaultScope": "org.scope",
+        "mainFile": "index.ts",
+        "rootDir": "scope/list",
+        "config": {
+            "bitdev.react/react-env@1.1.49": {},
+            "teambit.envs/envs": {
+                "env": "bitdev.react/react-env"
+            }
+        }
+    },
     "show": {
         "name": "show",
         "scope": "",
